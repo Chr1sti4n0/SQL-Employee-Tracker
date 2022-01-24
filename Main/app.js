@@ -1,9 +1,14 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const connection = require('./db/connection');
+require('dotenv').config();
 //const logo = require('asciiart-logo');
 
-const PORT = process.env.PORT || 3001;
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+  });
 
 //Prompt for main menu
 function menuPrompt() {
@@ -18,10 +23,12 @@ function menuPrompt() {
         .then((reponses) => {
             if (reponses.menu === 'View All Employees') {
                 return viewEmployees();
-            } else if (reponses.menu === 'Add Employee') {
-                return;
+            } else if (reponses.menu === 'View All Roles') {
+                return viewRoles();
+            } else if (reponses.menu === 'View All Departments') {
+                return viewDepartments();
             } else {
-                
+                return
             }
         }
     )
@@ -33,7 +40,25 @@ function viewEmployees() {
     connection.query(
         'SELECT * FROM employee', 
         function(err, results) {
-            console.log(results);
+            console.table(results);
+        }
+    )
+}
+
+function viewRoles() {
+    connection.query(
+        'SELECT * FROM roles', 
+        function(err, results) {
+            console.table(results);
+        }
+    )
+}
+
+function viewDepartments() {
+    connection.query(
+        'SELECT * FROM department', 
+        function(err, results) {
+            console.table(results);
         }
     )
 }
