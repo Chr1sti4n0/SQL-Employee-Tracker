@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
+const connection = require('./db/connection');
 //const logo = require('asciiart-logo');
 
 const PORT = process.env.PORT || 3001;
@@ -16,7 +17,7 @@ function menuPrompt() {
     )
         .then((reponses) => {
             if (reponses.menu === 'View All Employees') {
-                return ;
+                return viewEmployees();
             } else if (reponses.menu === 'Add Employee') {
                 return;
             } else {
@@ -27,3 +28,12 @@ function menuPrompt() {
 };
 
 menuPrompt();
+
+function viewEmployees() {
+    connection.query(
+        'SELECT * FROM employee', 
+        function(err, results) {
+            console.log(results);
+        }
+    )
+}
