@@ -29,6 +29,8 @@ function menuPrompt() {
                 return viewDepartments();
             } else if (reponses.menu === 'Add Department') {
                 return addDepartment();
+            } else if (reponses.menu === 'Add Role') {
+                return addRole();    
             } else {
                 return
             }
@@ -79,11 +81,45 @@ function addDepartment() {
         ])
         .then((responses) => {
             connection.query(
-                'INSERT INTO department ([name]) VALUES (responses)', 
-                function(responses) {
+                `INSERT INTO department (name) VALUES ("${responses.departmentName}")`, 
+                function(err, results) {
                     console.log("Added new department to database.");
                     menuPrompt();
                 }
             )
         })
 }
+
+function addRole() {
+    return inquirer.prompt(
+        [
+            {
+                type: 'input',
+                name: 'roleName',
+                message: 'What is the name of the role?',
+            },
+            {
+                type: 'input',
+                name: 'roleSalary',
+                message: 'What is the salary of the role?',
+                },
+                {
+                type: 'list',
+                name: 'roleDepartment',
+                message: 'Which department does the role belong to?',
+                choices: ['Engineering', 'Human Resources', 'Research & Development']
+                },
+        ])
+        .then((responses) => {
+            connection.query(
+                `INSERT INTO roles (title) VALUES ("${responses.roleName}")`,
+                `INSERT INTO roles (salary) VALUES ("${responses.roleSalary}")`,
+                `INSERT INTO roles (department_id) VALUES ("${responses.roleDepartment}")`,
+                function(err, results) {
+                    console.log("Added new role to database.");
+                    menuPrompt();
+                }
+            )
+        })    
+}
+
