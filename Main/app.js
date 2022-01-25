@@ -27,6 +27,8 @@ function menuPrompt() {
                 return viewRoles();
             } else if (reponses.menu === 'View All Departments') {
                 return viewDepartments();
+            } else if (reponses.menu === 'Add Department') {
+                return addDepartment();
             } else {
                 return
             }
@@ -41,6 +43,7 @@ function viewEmployees() {
         'SELECT * FROM employee', 
         function(err, results) {
             console.table(results);
+            menuPrompt();
         }
     )
 }
@@ -50,6 +53,7 @@ function viewRoles() {
         'SELECT * FROM roles', 
         function(err, results) {
             console.table(results);
+            menuPrompt();
         }
     )
 }
@@ -59,6 +63,27 @@ function viewDepartments() {
         'SELECT * FROM department', 
         function(err, results) {
             console.table(results);
+            menuPrompt();
         }
     )
+}
+
+function addDepartment() {
+    return inquirer.prompt(
+        [
+            {
+                type: 'input',
+                name: 'departmentName',
+                message: 'What is the name of the department?',
+            },
+        ])
+        .then((responses) => {
+            connection.query(
+                'INSERT INTO department ([name]) VALUES (responses)', 
+                function(responses) {
+                    console.log("Added new department to database.");
+                    menuPrompt();
+                }
+            )
+        })
 }
