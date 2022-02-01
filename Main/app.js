@@ -210,29 +210,55 @@ function addEmployee() {
 }
 
 function updateRole() {
-    return inquirer.prompt(
-        [
-            {
-                type: 'list',
-                name: 'updateEmployee',
-                message: 'Which employees role would you like to update?',
-                choices: ['']
-            },
-            {
-                type: 'list',
-                name: 'assignRole',
-                message: 'Which role would you like to assign to the employee?',
-                choices: ['']
-            }
-        ])
-        .then((responses) => {
+    connection.query(
+        `SELECT * FROM employee`,
+        function (err, employees) {
             connection.query(
-                `INSERT INTO employee (first_name) VALUES ("${responses.updateEmployee}")`,
-                `INSERT INTO employee (role_id) VALUES ("${responses.assignRole}")`,
-                function (err, results) {
-                    console.log("Updated employee role in database.");
-                    menuPrompt();
+                `SELECT * FROM roles`,
+                function (err, role) {
+                    return inquirer.prompt(
+                        [
+                            {
+                                type: 'list',
+                                name: 'updateEmployee',
+                                message: 'Which employees role would you like to update?',
+                                choices: employees.map(function (employee) {
+                                    return employee.first_name;
+                                })
+                            },
+                            {
+                                type: 'list',
+                                name: 'assignRole',
+                                message: 'Which role would you like to assign to the employee?',
+                                choices: role.map(function (roles) {
+                                    return roles.title;
+                                })
+                            }
+                        ])
+                        .then((responses) => {
+                            let employeeId
+                            for (i = 0; i < employees.length; i++) {
+                                if (employees[i].first_name === responses.updateEmployee) {
+                                    employeeId = employees[i].id
+                                }
+                            }
+                            let roleId
+                            for (i = 0; i < role.length; i++) {
+                                if (role[i].title === responses.assignRole) {
+                                    roleId = role[i].id
+                                }
+                            }
+                            connection.query(
+                                `UPDATE roles SET title = ("${roleId}") WHERE first_name = ("${employeeId}") `,
+                                function (err, results) {
+                                    console.log("Updated employee role in database.");
+                                    menuPrompt();
+                                }
+                            )
+                        })
                 }
             )
-        })
+        }
+    )
+
 }
