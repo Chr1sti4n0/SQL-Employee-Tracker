@@ -46,7 +46,7 @@ menuPrompt();
 
 function viewEmployees() {
     connection.query(
-        'SELECT * FROM employee',
+        'SELECT first_name, last_name, title, salary, manager_id, name  FROM employee INNER JOIN roles ON employee.role_id = roles.id INNER JOIN department ON roles.department_id = department.id',
         //employee_id, first_name FROM employee INNER JOIN department = employee.id',
         function (err, results) {
             console.table(results);
