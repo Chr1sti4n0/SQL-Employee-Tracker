@@ -249,7 +249,7 @@ function updateRole() {
                                 }
                             }
                             connection.query(
-                                `UPDATE roles SET title = ("${roleId}") WHERE first_name = ("${employeeId}") `,
+                                `UPDATE employee SET role_id = ? WHERE id = ?`, [roleId, employeeId],
                                 function (err, results) {
                                     console.log("Updated employee role in database.");
                                     menuPrompt();
