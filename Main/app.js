@@ -44,8 +44,10 @@ function menuPrompt() {
 
 menuPrompt();
 
+//Query to view all employees
 function viewEmployees() {
     connection.query(
+        //Joins all 3 tables
         'SELECT first_name, last_name, title, salary, manager_id, name  FROM employee INNER JOIN roles ON employee.role_id = roles.id INNER JOIN department ON roles.department_id = department.id',
         //employee_id, first_name FROM employee INNER JOIN department = employee.id',
         function (err, results) {
@@ -55,8 +57,10 @@ function viewEmployees() {
     )
 }
 
+//Query to view all roles
 function viewRoles() {
     connection.query(
+        //Selects all columns from roles
         'SELECT * FROM roles',
         function (err, results) {
             console.table(results);
@@ -65,8 +69,10 @@ function viewRoles() {
     )
 }
 
+//Query to view all departments
 function viewDepartments() {
     connection.query(
+        //Selects all columns from department
         'SELECT * FROM department',
         function (err, results) {
             console.table(results);
@@ -75,6 +81,7 @@ function viewDepartments() {
     )
 }
 
+//Function to add a department
 function addDepartment() {
     return inquirer.prompt(
         [
@@ -95,8 +102,10 @@ function addDepartment() {
         })
 }
 
+//Function to add a role
 function addRole() {
     connection.query(
+        //Selects all columns from department
         `SELECT * FROM department`,
         function (err, departments) {
 
@@ -140,13 +149,16 @@ function addRole() {
     )
 }
 
+//Function to add an employee
 function addEmployee() {
     connection.query(
+        //selects all columns from employee
         `SELECT * FROM employee`,
         function (err, employees) {
             // console.log(err)
             // console.log(employees);
             connection.query(
+                //selects all columns from department
                 `SELECT * FROM department`,
                 function (err, departments) {
                     // console.log(err);
@@ -209,11 +221,14 @@ function addEmployee() {
 
 }
 
+//Function to update role
 function updateRole() {
     connection.query(
+        //selects all columns from employee
         `SELECT * FROM employee`,
         function (err, employees) {
             connection.query(
+                //selects all columns from roles
                 `SELECT * FROM roles`,
                 function (err, role) {
                     return inquirer.prompt(
